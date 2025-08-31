@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot the Difference - Game Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .icon-button {
+            transition: all 0.2s ease;
+        }
+        .icon-button:hover {
+            transform: scale(1.05);
+        }
+        .icon-button:active {
+            transform: scale(0.95);
+        }
+        .correct {
+            background-color: #10B981;
+            color: white;
+        }
+        .incorrect {
+            background-color: #EF4444;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">🎯 Spot the Difference</h1>
+                <p class="text-gray-600">Game Demo - Full API Integration</p>
+            </div>
+
+            <!-- Authentication Section -->
+            <div id="auth-section" class="mb-8">
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Step 1: Register/Login</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="name" placeholder="Your Name" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        <input type="tel" id="phone" placeholder="Your Phone" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        <button onclick="registerUser()" 
+                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                            Register & Start Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Section -->
+            <div id="game-section" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-gray-800">
+                            Round <span id="current-round">1</span> of 10
+                        </h2>
+                        <div class="w-full bg-gray-200 rounded-full h-3 mt-2">
+                            <div id="progress-bar" class="bg-blue-600 h-3 rounded-full" style="width: 10%"></div>
+                        </div>
+                    </div>
+                    <div class="text-right ml-6">
+                        <p class="text-sm text-gray-600">Time</p>
+                        <p id="timer" class="text-2xl font-bold text-blue-600">00:00</p>
+                    </div>
+                </div>
+
+                <div class="text-center mb-8">
+                    <h3 id="game-title" class="text-2xl font-bold text-gray-800 mb-2">
+                        Find the Different Icon
+                    </h3>
+                    <p id="game-description" class="text-gray-600">
+                        Tap the icon that looks different from the others
+                    </p>
+                </div>
+
+                <!-- Feedback -->
+                <div id="feedback" class="hidden text-center mb-6 p-4 rounded-lg">
+                    <p id="feedback-text" class="text-lg font-semibold"></p>
+                </div>
+
+                <!-- Icon Grid -->
+                <div id="icon-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <!-- Icons will be populated here -->
+                </div>
+
+                <div class="text-center">
+                    <p id="difficulty" class="text-sm text-gray-500">Difficulty Level: 1 ⭐</p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="hidden text-center">
+                <div class="text-6xl mb-6">🎉</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Game Complete!</h2>
+                <p id="final-time" class="text-lg text-gray-600 mb-4"></p>
+                <p id="final-score" class="text-lg text-blue-600 mb-6"></p>
+                <button onclick="showLeaderboard()" 
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
+                    View Leaderboard
+                </button>
+            </div>
+
+            <!-- Leaderboard -->
+            <div id="leaderboard-section" class="hidden">
+                <h2 class="text-2xl font-bold text-center mb-6">🏆 Leaderboard</h2>
+                <div id="leaderboard-list" class="space-y-3 mb-6">
+                    <!-- Leaderboard will be populated here -->
+                </div>
+                <div class="text-center">
+                    <button onclick="resetGame()" 
+                            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                        Play Again
+                    </button>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div id="status" class="text-center text-gray-500 text-sm mt-4">
+                Ready to play!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            token: null,
+            sessionId: null,
+            currentRound: 1,
+            totalRounds: 10,
+            iconSets: [],
+            currentIconSet: null,
+            startTime: null,
+            timer: null,
+            correctAnswers: 0,
+            score: 0
+        };
+
+        const API_BASE = 'http://localhost:3001/api';
+
+        // Timer functions
+        function startTimer() {
+            gameState.startTime = Date.now();
+            gameState.timer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - gameState.startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+                gameState.timer = null;
+            }
+        }
+
+        function getElapsedTime() {
+            return Math.floor((Date.now() - gameState.startTime) / 1000);
+        }
+
+        // Sound effects using Web Audio API
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                if (type === 'correct') {
+                    oscillator.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                    oscillator.start();
+                    oscillator.stop(ctx.currentTime + 0.5);
+                } else if (type === 'incorrect') {
+                    oscillator.frequency.setValueAtTime(300, ctx.currentTime);
+                    oscillator.frequency.setValueAtTime(200, ctx.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    oscillator.start();
+                    oscillator.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.log('Sound not supported');
+            }
+        }
+
+        // API Functions
+        async function registerUser() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            if (!name || !phone) {
+                updateStatus('Please enter both name and phone number');
+                return;
+            }
+
+            try {
+                updateStatus('Registering user...');
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    gameState.token = data.token;
+                    updateStatus(`Welcome ${data.user.name}! Starting game...`);
+                    await startGame();
+                } else {
+                    updateStatus(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                updateStatus(`Error: ${error.message}`);
+            }
+        }
+
+        async function startGame() {
+            try {
+                // Start game session
+                const sessionResponse = await fetch(`${API_BASE}/game/start`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${gameState.token}`,
+                        'Content-Type': 'application/json' 
+                    }
+                });
+                const sessionData = await sessionResponse.json();
+                gameState.sessionId = sessionData.sessionId;
+
+                // Get random icon sets
+                const iconResponse = await fetch(`${API_BASE}/icons/sets/random/10`);
+                const iconData = await iconResponse.json();
+                gameState.iconSets = iconData.iconSets;
+                gameState.currentIconSet = iconData.iconSets[0];
+
+                // Switch to game UI
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('game-section').classList.remove('hidden');
+                
+                startTimer();
+                loadCurrentRound();
+                updateStatus('Game started! Find the different icon.');
+            } catch (error) {
+                updateStatus(`Error starting game: ${error.message}`);
+            }
+        }
+
+        function loadCurrentRound() {
+            const iconSet = gameState.currentIconSet;
+            if (!iconSet) return;
+
+            document.getElementById('current-round').textContent = gameState.currentRound;
+            document.getElementById('game-title').textContent = iconSet.name;
+            document.getElementById('game-description').textContent = iconSet.description;
+            document.getElementById('difficulty').textContent = `Difficulty Level: ${iconSet.difficulty} ⭐`;
+            
+            const progress = (gameState.currentRound / gameState.totalRounds) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // Create icon grid
+            const grid = document.getElementById('icon-grid');
+            grid.innerHTML = '';
+            
+            iconSet.icons.forEach((icon, index) => {
+                const button = document.createElement('button');
+                button.className = 'icon-button aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl hover:from-blue-50 hover:to-blue-100 transition duration-200 flex items-center justify-center text-5xl shadow-lg hover:shadow-xl';
+                button.textContent = icon;
+                button.onclick = () => selectIcon(index);
+                grid.appendChild(button);
+            });
+        }
+
+        function selectIcon(iconIndex) {
+            const isCorrect = iconIndex === gameState.currentIconSet.correctIcon;
+            
+            // Play sound
+            playSound(isCorrect ? 'correct' : 'incorrect');
+            
+            // Show feedback
+            showFeedback(isCorrect);
+            
+            if (isCorrect) {
+                gameState.correctAnswers++;
+                gameState.score += 100 * gameState.currentIconSet.difficulty;
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    nextRound();
+                }, 1000);
+            } else {
+                setTimeout(() => hideFeedback(), 1500);
+            }
+        }
+
+        function showFeedback(isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedback.className = `text-center mb-6 p-4 rounded-lg ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+            feedbackText.textContent = isCorrect ? '✅ Correct!' : '❌ Try again!';
+            feedback.classList.remove('hidden');
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedback').classList.add('hidden');
+        }
+
+        function nextRound() {
+            if (gameState.currentRound >= gameState.totalRounds) {
+                endGame();
+                return;
+            }
+            
+            gameState.currentRound++;
+            gameState.currentIconSet = gameState.iconSets[gameState.currentRound - 1];
+            loadCurrentRound();
+        }
+
+        async function endGame() {
+            stopTimer();
+            const totalTime = getElapsedTime();
+            
+            try {
+                // Submit game result
+                await fetch(`${API_BASE}/game/complete`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${gameState.token}`,
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ 
+                        sessionId: gameState.sessionId, 
+                        totalTime: totalTime 
+                    })
+                });
+                
+                // Show results
+                document.getElementById('game-section').classList.add('hidden');
+                document.getElementById('results-section').classList.remove('hidden');
+                
+                const minutes = Math.floor(totalTime / 60);
+                const seconds = totalTime % 60;
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                document.getElementById('final-time').textContent = `Time: ${timeString}`;
+                document.getElementById('final-score').textContent = 
+                    `Score: ${gameState.score} points (${gameState.correctAnswers}/${gameState.totalRounds} correct)`;
+                    
+                updateStatus('Game completed! Great job!');
+            } catch (error) {
+                updateStatus(`Error saving game: ${error.message}`);
+            }
+        }
+
+        async function showLeaderboard() {
+            try {
+                const response = await fetch(`${API_BASE}/game/leaderboard`);
+                const data = await response.json();
+                
+                document.getElementById('results-section').classList.add('hidden');
+                document.getElementById('leaderboard-section').classList.remove('hidden');
+                
+                const leaderboardList = document.getElementById('leaderboard-list');
+                leaderboardList.innerHTML = '';
+                
+                if (data.leaderboard && data.leaderboard.length > 0) {
+                    data.leaderboard.forEach(player => {
+                        const div = document.createElement('div');
+                        const minutes = Math.floor(player.time / 60);
+                        const seconds = player.time % 60;
+                        const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        
+                        div.className = 'flex items-center p-3 bg-gray-50 rounded-lg';
+                        div.innerHTML = `
+                            <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                                ${player.rank}
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold">${player.name}</div>
+                            </div>
+                            <div class="text-blue-600 font-bold">${timeString}</div>
+                        `;
+                        leaderboardList.appendChild(div);
+                    });
+                } else {
+                    leaderboardList.innerHTML = '<p class="text-center text-gray-500">No completed games yet!</p>';
+                }
+            } catch (error) {
+                updateStatus(`Error loading leaderboard: ${error.message}`);
+            }
+        }
+
+        function resetGame() {
+            // Reset all game state
+            gameState = {
+                token: null,
+                sessionId: null,
+                currentRound: 1,
+                totalRounds: 10,
+                iconSets: [],
+                currentIconSet: null,
+                startTime: null,
+                timer: null,
+                correctAnswers: 0,
+                score: 0
+            };
+            
+            // Reset UI
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('game-section').classList.add('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('leaderboard-section').classList.add('hidden');
+            
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            
+            updateStatus('Ready to play!');
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+    </script>
+</body>
+</html>

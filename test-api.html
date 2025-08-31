@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Spot the Difference API Test</h1>
+    
+    <div class="test-section">
+        <h2>Health Check</h2>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <div id="health-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>User Registration</h2>
+        <input type="text" id="name" placeholder="Name" value="Test User">
+        <input type="text" id="phone" placeholder="Phone" value="+1234567890">
+        <button onclick="testRegistration()">Register User</button>
+        <div id="register-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Start Game</h2>
+        <button onclick="testStartGame()">Start Game (requires registration first)</button>
+        <div id="game-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Icon Sets</h2>
+        <button onclick="testIconSets()">Get All Icon Sets</button>
+        <button onclick="testRandomIconSets()">Get 5 Random Icon Sets</button>
+        <div id="icons-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Leaderboard</h2>
+        <button onclick="testLeaderboard()">Get Leaderboard</button>
+        <div id="leaderboard-result" class="result"></div>
+    </div>
+
+    <script>
+        let currentToken = null;
+
+        async function testHealth() {
+            try {
+                const response = await fetch('http://localhost:3001/api/health');
+                const data = await response.json();
+                document.getElementById('health-result').innerHTML = 
+                    `<span class="success">✅ ${data.message}</span>`;
+            } catch (error) {
+                document.getElementById('health-result').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function testRegistration() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, phone })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.token;
+                    document.getElementById('register-result').innerHTML = 
+                        `<span class="success">✅ ${data.message}<br>User: ${data.user.name}<br>Token saved!</span>`;
+                } else {
+                    document.getElementById('register-result').innerHTML = 
+                        `<span class="error">❌ Error: ${data.message}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('register-result').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function testStartGame() {
+            if (!currentToken) {
+                document.getElementById('game-result').innerHTML = 
+                    `<span class="error">❌ Please register first</span>`;
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/game/start', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('game-result').innerHTML = 
+                        `<span class="success">✅ ${data.message}<br>Session ID: ${data.sessionId}</span>`;
+                } else {
+                    document.getElementById('game-result').innerHTML = 
+                        `<span class="error">❌ Error: ${data.message}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('game-result').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function testIconSets() {
+            try {
+                const response = await fetch('http://localhost:3001/api/icons/sets');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const iconSetsHtml = data.iconSets.map(set => 
+                        `${set.name}: ${set.icons.join(' ')} (Answer: ${set.correctIcon})`
+                    ).join('<br>');
+                    document.getElementById('icons-result').innerHTML = 
+                        `<span class="success">✅ Icon Sets (${data.iconSets.length} total):<br>${iconSetsHtml}</span>`;
+                } else {
+                    document.getElementById('icons-result').innerHTML = 
+                        `<span class="error">❌ Error: ${data.message}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('icons-result').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function testRandomIconSets() {
+            try {
+                const response = await fetch('http://localhost:3001/api/icons/sets/random/5');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const iconSetsHtml = data.iconSets.map(set => 
+                        `${set.name}: ${set.icons.join(' ')}`
+                    ).join('<br>');
+                    document.getElementById('icons-result').innerHTML = 
+                        `<span class="success">✅ Random Icon Sets (${data.iconSets.length} sets):<br>${iconSetsHtml}</span>`;
+                } else {
+                    document.getElementById('icons-result').innerHTML = 
+                        `<span class="error">❌ Error: ${data.message}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('icons-result').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+        async function testLeaderboard() {
+            try {
+                const response = await fetch('http://localhost:3001/api/game/leaderboard');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const leaderboardHtml = data.leaderboard.length > 0 
+                        ? data.leaderboard.map(p => `${p.rank}. ${p.name} - ${p.time}s`).join('<br>')
+                        : 'No players yet';
+                    document.getElementById('leaderboard-result').innerHTML = 
+                        `<span class="success">✅ Leaderboard:<br>${leaderboardHtml}</span>`;
+                } else {
+                    document.getElementById('leaderboard-result').innerHTML = 
+                        `<span class="error">❌ Error: ${data.message}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('leaderboard-result').innerHTML = 
+                    `<span class="error">❌ Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
