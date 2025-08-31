@@ -68,14 +68,14 @@ router.post('/register', async (req: Request, res: Response) => {
 });
 
 router.get('/me', async (req: Request, res: Response) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const token = req.get('Authorization')?.replace('Bearer ', '');
   
   if (!token) {
     return res.status(401).json({ message: 'No token provided' });
   }
 
   try {
-    const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    const decoded = JSON.parse(global.Buffer.from(token.split('.')[1], 'base64').toString());
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       select: { id: true, name: true, phone: true, createdAt: true }

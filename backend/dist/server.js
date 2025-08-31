@@ -10,12 +10,15 @@ const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const game_1 = __importDefault(require("./routes/game"));
+const icons_1 = __importDefault(require("./routes/icons"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.NODE_ENV === 'production'
+        ? process.env.FRONTEND_URL
+        : ['http://localhost:5173', 'http://localhost:3000', 'null'], // 'null' allows file:// protocol
     credentials: true
 }));
 app.use((0, morgan_1.default)('combined'));
@@ -26,6 +29,7 @@ app.get('/api/health', (req, res) => {
 });
 app.use('/api/auth', auth_1.default);
 app.use('/api/game', game_1.default);
+app.use('/api/icons', icons_1.default);
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });

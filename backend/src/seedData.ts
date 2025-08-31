@@ -96,7 +96,7 @@ async function seedIconSets() {
   }
 }
 
-if (require.main === module) {
+if (typeof require !== 'undefined' && require.main === module) {
   seedIconSets();
 }
 
