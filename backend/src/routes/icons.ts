@@ -10,7 +10,7 @@ router.get('/sets', async (req: Request, res: Response) => {
       orderBy: { difficulty: 'asc' }
     });
 
-    const formattedSets = iconSets.map(set => ({
+    const formattedSets = iconSets.map((set: any) => ({
       id: set.id,
       name: set.name,
       description: set.description,
@@ -38,7 +38,7 @@ router.get('/sets/random/:count', async (req: Request, res: Response) => {
     const shuffled = iconSets.sort(() => 0.5 - Math.random());
     const selectedSets = shuffled.slice(0, Math.min(count, iconSets.length));
 
-    const formattedSets = selectedSets.map(set => ({
+    const formattedSets = selectedSets.map((set: any) => ({
       id: set.id,
       name: set.name,
       description: set.description,

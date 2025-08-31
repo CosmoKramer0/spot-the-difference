@@ -93,7 +93,7 @@ router.get('/leaderboard', async (req: Request, res: Response) => {
       }
     });
 
-    const leaderboard = topPlayers.map((session, index) => ({
+    const leaderboard = topPlayers.map((session: any, index: number) => ({
       rank: index + 1,
       name: session.user.name,
       phone: session.user.phone,
