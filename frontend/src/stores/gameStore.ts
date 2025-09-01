@@ -23,6 +23,7 @@ interface GameState {
   
   setGameSession: (sessionId: string, startTime: Date) => void;
   setIconSets: (iconSets: IconSet[]) => void;
+  setGameActive: (active: boolean) => void;
   nextRound: () => void;
   resetGame: () => void;
   endGame: () => void;
@@ -31,7 +32,7 @@ interface GameState {
 
 export const useGameStore = create<GameState>((set, get) => ({
   currentRound: 1,
-  totalRounds: 10,
+  totalRounds: 6,
   startTime: null,
   sessionId: null,
   isGameActive: false,
@@ -57,6 +58,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       iconSets, 
       currentIconSet: iconSets[0] || null 
     }),
+
+  setGameActive: (active: boolean) =>
+    set({ isGameActive: active }),
 
   nextRound: () =>
     set((state) => {

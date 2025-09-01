@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useGameStore } from '../stores/gameStore';
 import { gameApi, ApiError } from '../utils/api';
+import Watermark from './Watermark';
 
 const GameStart: React.FC = () => {
   const navigate = useNavigate();
@@ -37,47 +38,80 @@ const GameStart: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
+      <Watermark />
+      <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 w-full max-w-lg text-center">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Welcome{user?.name ? `, ${user.name}` : ''}! 👋
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
+            Welcome{user?.name ? `, ${user.name}` : ''}!
           </h1>
-          <p className="text-gray-600 mb-6">
-            Find the different icon in each set as fast as you can!
+          <p className="text-lg text-gray-300 mb-8 font-medium">
+            Test your visual perception with our modern pattern recognition challenge
           </p>
           
-          <div className="bg-blue-50 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-blue-800 mb-2">How to Play:</h3>
-            <ul className="text-sm text-blue-700 space-y-1">
-              <li>• Look for the icon that's different from the others</li>
-              <li>• Tap the different icon to proceed</li>
-              <li>• Complete all 10 rounds as quickly as possible</li>
-              <li>• Your time will be recorded for the leaderboard</li>
+          <div className="bg-gray-700/50 rounded-xl p-6 mb-6 border border-gray-600/50">
+            <h3 className="font-bold text-white mb-4 text-lg">Game Objective:</h3>
+            <ul className="text-sm text-gray-300 space-y-3 text-left max-w-sm mx-auto">
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Identify the icon that differs from the others in each set</span>
+              </li>
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-cyan-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Click the unique icon to advance to the next round</span>
+              </li>
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Complete 6 rounds as quickly as possible</span>
+              </li>
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Compete for the fastest completion time</span>
+              </li>
             </ul>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-            {error}
+          <div className="mb-6 p-4 bg-red-900/50 backdrop-blur-sm border border-red-600/50 text-red-300 rounded-xl">
+            <p className="font-medium">{error}</p>
           </div>
         )}
         
         <button
           onClick={handleStartGame}
           disabled={isLoading}
-          className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 disabled:bg-green-400 transition duration-200 shadow-md hover:shadow-lg"
+          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Starting Game...
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+              Preparing Game...
             </div>
           ) : (
-            '🚀 Start Game'
+            <span className="flex items-center justify-center">
+              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+              Start Challenge
+            </span>
           )}
         </button>
+        
+        <div className="mt-6 flex justify-center space-x-6 text-sm text-gray-400">
+          <div className="text-center">
+            <div className="font-bold text-white">6</div>
+            <div>Rounds</div>
+          </div>
+          <div className="text-center">
+            <div className="font-bold text-white">50</div>
+            <div>Icons per Round</div>
+          </div>
+          <div className="text-center">
+            <div className="font-bold text-white">1</div>
+            <div>Different Icon</div>
+          </div>
+        </div>
       </div>
     </div>
   );

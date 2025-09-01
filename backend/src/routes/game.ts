@@ -32,8 +32,24 @@ router.post('/start', authMiddleware, async (req: AuthRequest, res: Response) =>
 
 router.post('/complete', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    console.log('Request body:', req.body);
+    console.log('Request headers:', req.headers);
+    
+    // Handle text/plain content-type by parsing manually
+    let body = req.body;
+    if (!body && req.headers['content-type']?.includes('text/plain')) {
+      try {
+        // Get raw body and parse as JSON
+        const rawBody = (req as any).rawBody || '';
+        body = JSON.parse(rawBody);
+        console.log('Parsed body from text/plain:', body);
+      } catch (e) {
+        console.log('Failed to parse raw body');
+      }
+    }
+    
     const userId = req.userId!;
-    const { sessionId, totalTime } = req.body;
+    const { sessionId, totalTime } = body;
 
     if (!sessionId || totalTime === undefined) {
       return res.status(400).json({ 

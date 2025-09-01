@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '../stores/authStore';
 import { authApi, ApiError } from '../utils/api';
+import Watermark from './Watermark';
 
 interface LoginForm {
   name: string;
@@ -41,22 +42,25 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
+      <Watermark />
+      <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">🎯 Spot the Difference</h1>
-          <p className="text-gray-600">Enter your details to start playing!</p>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Spot the Difference
+          </h1>
+          <p className="text-gray-300">Enter your details to start the challenge</p>
         </div>
         
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+          <div className="mb-6 p-4 bg-red-900/50 border border-red-600/50 text-red-300 rounded-lg">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Your Name
             </label>
             <input
@@ -65,19 +69,19 @@ const Login: React.FC = () => {
                 minLength: { value: 2, message: 'Name must be at least 2 characters' }
               })}
               type="text"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-                errors.name ? 'border-red-300' : 'border-gray-300'
+              className={`w-full px-4 py-3 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 ${
+                errors.name ? 'border-red-500' : 'border-gray-600'
               }`}
               placeholder="Enter your name"
               disabled={isLoading}
             />
             {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+              <p className="mt-1 text-sm text-red-400">{errors.name.message}</p>
             )}
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Phone Number
             </label>
             <input
@@ -89,29 +93,29 @@ const Login: React.FC = () => {
                 }
               })}
               type="tel"
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
-                errors.phone ? 'border-red-300' : 'border-gray-300'
+              className={`w-full px-4 py-3 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 ${
+                errors.phone ? 'border-red-500' : 'border-gray-600'
               }`}
               placeholder="Enter your phone number"
               disabled={isLoading}
             />
             {errors.phone && (
-              <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+              <p className="mt-1 text-sm text-red-400">{errors.phone.message}</p>
             )}
           </div>
           
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-blue-400 transition duration-200 shadow-md hover:shadow-lg"
+            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Joining...
+                Joining Challenge...
               </div>
             ) : (
-              'Join Game'
+              'Begin Challenge'
             )}
           </button>
         </form>

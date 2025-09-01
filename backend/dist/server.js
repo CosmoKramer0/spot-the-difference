@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const helmet_1 = __importDefault(require("helmet"));
+// import helmet from 'helmet'; // Temporarily disabled for CORS debugging
 const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const auth_1 = __importDefault(require("./routes/auth"));
@@ -14,16 +14,30 @@ const icons_1 = __importDefault(require("./routes/icons"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
-app.use((0, helmet_1.default)());
+console.log('NODE_ENV:', process.env.NODE_ENV || 'undefined');
+// CORS configuration
 app.use((0, cors_1.default)({
-    origin: process.env.NODE_ENV === 'production'
-        ? process.env.FRONTEND_URL
-        : ['http://localhost:5173', 'http://localhost:3000', 'null'], // 'null' allows file:// protocol
+    origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : 'http://localhost:5173',
     credentials: true
 }));
-app.use((0, morgan_1.default)('combined'));
+// Raw body capture middleware for text/plain requests
+app.use('/api/game/complete', (req, res, next) => {
+    if (req.headers['content-type']?.includes('text/plain')) {
+        let rawBody = '';
+        req.on('data', chunk => rawBody += chunk);
+        req.on('end', () => {
+            req.rawBody = rawBody;
+            next();
+        });
+    }
+    else {
+        next();
+    }
+});
+// Body parsing middleware
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use((0, morgan_1.default)('combined'));
 app.get('/api/health', (req, res) => {
     res.json({ message: 'Spot the Difference API is running!' });
 });

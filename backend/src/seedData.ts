@@ -1,75 +1,67 @@
 import prisma from './utils/prisma';
 
+// Function to generate 50 icons with one different
+function generateIconSet(iconId: string, correctPosition: number) {
+  const icons = [];
+  for (let i = 0; i < 50; i++) {
+    icons.push({
+      id: iconId,
+      variant: i === correctPosition ? 'different' : 'normal'
+    });
+  }
+  return icons;
+}
+
+// Generate sets with consistent correct positions
+const elasticsearchCorrect = Math.floor(Math.random() * 50);
+const observabilityCorrect = Math.floor(Math.random() * 50);
+const securityCorrect = Math.floor(Math.random() * 50);
+const elasticLogoCorrect = Math.floor(Math.random() * 50);
+const eyeCorrect = Math.floor(Math.random() * 50);
+const malwareCorrect = Math.floor(Math.random() * 50);
+
 const sampleIconSets = [
   {
-    name: 'Animals',
-    description: 'Find the different animal',
-    iconUrls: JSON.stringify(['🐶', '🐶', '🐶', '🐶', '🐶', '🐶', '🐱', '🐶']),
-    correctIcon: 6,
+    name: 'Elasticsearch',
+    description: 'Find the different Elasticsearch logo',
+    iconUrls: JSON.stringify(generateIconSet('elasticsearch', elasticsearchCorrect)),
+    correctIcon: elasticsearchCorrect,
     difficulty: 1
   },
   {
-    name: 'Fruits',
-    description: 'Spot the different fruit',
-    iconUrls: JSON.stringify(['🍎', '🍎', '🍎', '🍎', '🍎', '🍌', '🍎', '🍎']),
-    correctIcon: 5,
-    difficulty: 1
-  },
-  {
-    name: 'Transport',
-    description: 'Find the odd vehicle',
-    iconUrls: JSON.stringify(['🚗', '🚗', '🚗', '🚗', '🚁', '🚗', '🚗', '🚗']),
-    correctIcon: 4,
-    difficulty: 1
-  },
-  {
-    name: 'Food',
-    description: 'Which food is different?',
-    iconUrls: JSON.stringify(['🍕', '🍕', '🍕', '🍕', '🍕', '🍕', '🍔', '🍕']),
-    correctIcon: 6,
+    name: 'Observability',
+    description: 'Spot the different observability icon',
+    iconUrls: JSON.stringify(generateIconSet('observability', observabilityCorrect)),
+    correctIcon: observabilityCorrect,
     difficulty: 2
   },
   {
-    name: 'Sports',
-    description: 'Find the different sport',
-    iconUrls: JSON.stringify(['⚽', '⚽', '⚽', '🏀', '⚽', '⚽', '⚽', '⚽']),
-    correctIcon: 3,
+    name: 'Security',
+    description: 'Find the different security icon',
+    iconUrls: JSON.stringify(generateIconSet('security', securityCorrect)),
+    correctIcon: securityCorrect,
+    difficulty: 3
+  },
+  {
+    name: 'Elastic Logo',
+    description: 'Spot the different Elastic logo',
+    iconUrls: JSON.stringify(generateIconSet('elastic-logo', elasticLogoCorrect)),
+    correctIcon: elasticLogoCorrect,
     difficulty: 2
   },
   {
-    name: 'Weather',
-    description: 'Spot the weather difference',
-    iconUrls: JSON.stringify(['☀️', '☀️', '☀️', '☀️', '☀️', '🌧️', '☀️', '☀️']),
-    correctIcon: 5,
-    difficulty: 2
-  },
-  {
-    name: 'Faces',
-    description: 'Which emoji is different?',
-    iconUrls: JSON.stringify(['😊', '😊', '😊', '😊', '😊', '😊', '😊', '😢']),
-    correctIcon: 7,
-    difficulty: 3
-  },
-  {
-    name: 'Stars',
-    description: 'Find the different star',
-    iconUrls: JSON.stringify(['⭐', '⭐', '⭐', '⭐', '⭐', '⭐', '🌟', '⭐']),
-    correctIcon: 6,
-    difficulty: 3
-  },
-  {
-    name: 'Hearts',
-    description: 'Spot the different heart',
-    iconUrls: JSON.stringify(['❤️', '❤️', '❤️', '❤️', '💙', '❤️', '❤️', '❤️']),
-    correctIcon: 4,
-    difficulty: 3
-  },
-  {
-    name: 'Hands',
-    description: 'Which hand gesture is different?',
-    iconUrls: JSON.stringify(['👍', '👍', '👍', '👍', '👍', '👍', '👎', '👍']),
-    correctIcon: 6,
+    name: 'Eye Symbol',
+    description: 'Which eye is different?',
+    iconUrls: JSON.stringify(generateIconSet('eye', eyeCorrect)),
+    correctIcon: eyeCorrect,
     difficulty: 4
+  },
+  {
+    name: 'Malware',
+    description: 'Find the different malware icon',
+    iconUrls: JSON.stringify(generateIconSet('malware', malwareCorrect)),
+    correctIcon: malwareCorrect,
+    difficulty: 5
   }
 ];
 

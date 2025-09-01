@@ -1,7 +1,7 @@
 {
   "name": "Spot the Difference - Find the Different Icon",
   "short_name": "Spot Difference",
-  "description": "A fun mobile game where you find the different emoji in each set. Challenge yourself to complete all 10 rounds as fast as possible!",
+  "description": "A fun mobile game where you find the different icon in each set. Challenge yourself to complete all 10 rounds as fast as possible!",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

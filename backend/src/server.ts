@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
+// import helmet from 'helmet'; // Temporarily disabled for CORS debugging
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
@@ -12,16 +12,32 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(helmet());
+console.log('NODE_ENV:', process.env.NODE_ENV || 'undefined');
+
+// CORS configuration
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
-    : ['http://localhost:5173', 'http://localhost:3000', 'null'], // 'null' allows file:// protocol
+  origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : 'http://localhost:5173',
   credentials: true
 }));
-app.use(morgan('combined'));
+
+// Raw body capture middleware for text/plain requests
+app.use('/api/game/complete', (req, res, next) => {
+  if (req.headers['content-type']?.includes('text/plain')) {
+    let rawBody = '';
+    req.on('data', chunk => rawBody += chunk);
+    req.on('end', () => {
+      (req as any).rawBody = rawBody;
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('combined'));
 
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Spot the Difference API is running!' });

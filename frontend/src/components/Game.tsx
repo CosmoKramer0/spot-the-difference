@@ -4,7 +4,10 @@ import { useAuthStore } from '../stores/authStore';
 import { useGameStore } from '../stores/gameStore';
 import { useTimer } from '../hooks/useTimer';
 import { useSound } from '../hooks/useSound';
-import { iconApi, gameApi, ApiError } from '../utils/api';
+import { iconApi, gameApi } from '../utils/api';
+import SvgIcon from './SvgIcon';
+import { getAllIcons } from '../data/svgIcons';
+import Watermark from './Watermark';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +30,7 @@ const Game: React.FC = () => {
   const { playCorrectSound, playIncorrectSound, playGameCompleteSound } = useSound();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [feedback, setFeedback] = useState<{ type: 'correct' | 'incorrect'; message: string } | null>(null);
+  const [svgIconsData] = useState(() => getAllIcons());
 
   useEffect(() => {
     if (!token || !sessionId) {
@@ -51,7 +54,7 @@ const Game: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await iconApi.getRandomSets(totalRounds);
-      setIconSets(response.iconSets);
+      setIconSets((response as any).iconSets);
     } catch (err) {
       setError('Failed to load game data');
     } finally {
@@ -78,26 +81,21 @@ const Game: React.FC = () => {
     // Play sound effects
     if (isCorrect) {
       playCorrectSound();
-    } else {
-      playIncorrectSound();
-    }
-
-    setFeedback({
-      type: isCorrect ? 'correct' : 'incorrect',
-      message: isCorrect ? '✅ Correct!' : '❌ Try again!'
-    });
-
-    if (isCorrect) {
+      // Temporarily disable game to prevent double-clicking
+      const { setGameActive } = useGameStore.getState();
+      setGameActive(false);
+      
+      // Advance to next round after a brief delay
       setTimeout(() => {
-        setFeedback(null);
         if (currentRound >= totalRounds) {
           endGame();
         } else {
           nextRound();
         }
-      }, 1000);
+      }, 500);
     } else {
-      setTimeout(() => setFeedback(null), 1500);
+      playIncorrectSound();
+      // Don't advance - let user keep trying
     }
   };
 
@@ -107,14 +105,22 @@ const Game: React.FC = () => {
     navigate('/start');
   };
 
+  const getSvgIconData = (iconId: string) => {
+    return svgIconsData.find(icon => icon.id === iconId);
+  };
+
   if (!token || !sessionId) return null;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center">
+        <Watermark />
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading game...</p>
+          <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full animate-pulse mx-auto mb-6 flex items-center justify-center">
+            <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <p className="text-xl font-medium text-white mb-2">Preparing your challenge...</p>
+          <p className="text-gray-300">Loading visual patterns</p>
         </div>
       </div>
     );
@@ -122,16 +128,21 @@ const Game: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center max-w-md w-full">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Game Error</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
+        <Watermark />
+        <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 text-center max-w-md w-full">
+          <div className="w-16 h-16 bg-red-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-4">Challenge Error</h2>
+          <p className="text-gray-300 mb-6">{error}</p>
           <button
             onClick={() => navigate('/start')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200"
+            className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all duration-200 font-medium shadow-lg"
           >
-            Back to Start
+            Return to Start
           </button>
         </div>
       </div>
@@ -140,15 +151,26 @@ const Game: React.FC = () => {
 
   if (isGameComplete) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center max-w-md w-full">
-          <div className="text-6xl mb-6">🎉</div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Game Complete!</h2>
-          <p className="text-lg text-gray-600 mb-6">
-            Time: {timer.getFormattedTime()}
-          </p>
-          <div className="text-sm text-gray-500">
-            Redirecting to leaderboard...
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
+        <Watermark />
+        <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 text-center max-w-md w-full">
+          <div className="w-20 h-20 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Challenge Complete!
+          </h2>
+          <div className="bg-gray-700/50 rounded-xl p-4 mb-6 border border-gray-600/50">
+            <p className="text-lg font-bold text-white mb-2">Final Time</p>
+            <p className="text-3xl font-bold text-cyan-400">
+              {timer.getFormattedTime()}
+            </p>
+          </div>
+          <div className="flex items-center justify-center text-gray-400 text-sm">
+            <div className="animate-spin w-4 h-4 border-2 border-gray-600 border-t-cyan-400 rounded-full mr-2"></div>
+            Saving your score...
           </div>
         </div>
       </div>
@@ -166,67 +188,79 @@ const Game: React.FC = () => {
   const progress = (currentRound / totalRounds) * 100;
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex-1">
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-bold text-gray-800">
-                  Round {currentRound} of {totalRounds}
-                </h2>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex flex-col">
+      <Watermark />
+      {/* Header - Compact */}
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 backdrop-blur-sm shadow-lg border-b border-gray-600/20 p-4 text-white">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center space-x-6">
+            <h1 className="text-xl font-bold text-white">
+              Round {currentRound} of {totalRounds}
+            </h1>
+            <div className="px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-bold shadow-lg">
+              Level {currentIconSet.difficulty}
+            </div>
+            <div className="w-40 bg-gray-600/50 rounded-full h-3">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="text-right">
+              <p className="text-sm text-slate-300">Time</p>
+              <p className="text-xl font-bold text-white">
+                {timer.getFormattedTime()}
+              </p>
+            </div>
+            <button
+              onClick={handleQuitGame}
+              className="px-4 py-2 text-white/80 hover:text-red-300 hover:bg-white/10 rounded-lg transition-all duration-200 font-medium"
+            >
+              Exit
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Game Area - Full height */}
+      <div className="flex-1 container mx-auto p-4 flex flex-col">
+        <div className="text-center mb-4">
+          <h2 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+            {currentIconSet.name}
+          </h2>
+          <p className="text-gray-300 font-medium text-lg">Find the different {currentIconSet.name.toLowerCase()} icon</p>
+        </div>
+
+        {/* Icon Grid - Optimized for no scrolling */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="grid grid-cols-10 gap-3 max-w-6xl mx-auto">
+            {currentIconSet.icons.map((iconData: any, index) => {
+              const iconInfo = getSvgIconData(iconData.id);
+              
+              return (
                 <button
-                  onClick={handleQuitGame}
-                  className="text-gray-500 hover:text-red-600 text-sm font-medium transition duration-200"
+                  key={index}
+                  onClick={() => handleIconClick(index)}
+                  disabled={!isGameActive}
+                  className="hover:scale-105 transform transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus:outline-none p-1"
                 >
-                  Quit Game
+                  {iconInfo ? (
+                    <SvgIcon
+                      iconData={iconInfo}
+                      size={52}
+                      variant={iconData.variant}
+                      className="transition-all duration-150"
+                    />
+                  ) : (
+                    <div className="w-13 h-13 bg-slate-200 rounded flex items-center justify-center text-slate-400">
+                      ?
+                    </div>
+                  )}
                 </button>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-            </div>
-            <div className="text-right ml-6">
-              <p className="text-sm text-gray-600">Time</p>
-              <p className="text-2xl font-bold text-blue-600">{timer.getFormattedTime()}</p>
-            </div>
-          </div>
-
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">
-              {currentIconSet.name}
-            </h3>
-            <p className="text-gray-600">{currentIconSet.description}</p>
-          </div>
-
-          {feedback && (
-            <div className={`text-center mb-6 p-4 rounded-lg ${
-              feedback.type === 'correct' 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-red-100 text-red-800'
-            }`}>
-              <p className="text-lg font-semibold">{feedback.message}</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {currentIconSet.icons.map((icon, index) => (
-              <button
-                key={index}
-                onClick={() => handleIconClick(index)}
-                disabled={!isGameActive || feedback !== null}
-                className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl hover:from-blue-50 hover:to-blue-100 transition duration-200 flex items-center justify-center text-5xl hover:scale-105 transform shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 active:scale-95"
-              >
-                {icon}
-              </button>
-            ))}
-          </div>
-
-          <div className="text-center text-sm text-gray-500">
-            Difficulty Level: {currentIconSet.difficulty} ⭐
+              );
+            })}
           </div>
         </div>
       </div>

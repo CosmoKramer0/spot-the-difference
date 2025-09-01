@@ -38,14 +38,30 @@ router.get('/sets/random/:count', async (req: Request, res: Response) => {
     const shuffled = iconSets.sort(() => 0.5 - Math.random());
     const selectedSets = shuffled.slice(0, Math.min(count, iconSets.length));
 
-    const formattedSets = selectedSets.map((set: any) => ({
-      id: set.id,
-      name: set.name,
-      description: set.description,
-      icons: JSON.parse(set.iconUrls),
-      correctIcon: set.correctIcon,
-      difficulty: set.difficulty
-    }));
+    const formattedSets = selectedSets.map((set: any) => {
+      // Generate a new random position for the different icon each time
+      const newCorrectPosition = Math.floor(Math.random() * 50);
+      
+      // Regenerate the icon set with the new random position
+      const icons = [];
+      const baseIconId = JSON.parse(set.iconUrls)[0].id; // Get the icon ID from the first item
+      
+      for (let i = 0; i < 50; i++) {
+        icons.push({
+          id: baseIconId,
+          variant: i === newCorrectPosition ? 'different' : 'normal'
+        });
+      }
+      
+      return {
+        id: set.id,
+        name: set.name,
+        description: set.description,
+        icons: icons,
+        correctIcon: newCorrectPosition,
+        difficulty: set.difficulty
+      };
+    });
 
     res.json({ iconSets: formattedSets });
   } catch (error) {
