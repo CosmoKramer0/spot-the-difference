@@ -20,6 +20,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "@api-url"
+    "VITE_API_URL": "https://spot-the-difference-production.up.railway.app"
   }
 }
