@@ -61,7 +61,7 @@ const SvgIcon: React.FC<SvgIconProps> = ({
   return (
     <div 
       className={`inline-block ${className}`}
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, pointerEvents: 'none' }}
       dangerouslySetInnerHTML={{ 
         __html: modifiedSvg.replace(
           /width="[\d.]+" height="[\d.]+"/,

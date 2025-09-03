@@ -40,18 +40,18 @@ const GameStart: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
       <Watermark />
-      <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 w-full max-w-lg text-center">
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
+      <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-6 sm:p-8 w-full max-w-lg text-center mx-4">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
             Welcome{user?.name ? `, ${user.name}` : ''}!
           </h1>
-          <p className="text-lg text-gray-300 mb-8 font-medium">
+          <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-8 font-medium">
             Test your visual perception with our modern pattern recognition challenge
           </p>
           
-          <div className="bg-gray-700/50 rounded-xl p-6 mb-6 border border-gray-600/50">
-            <h3 className="font-bold text-white mb-4 text-lg">Game Objective:</h3>
-            <ul className="text-sm text-gray-300 space-y-3 text-left max-w-sm mx-auto">
+          <div className="bg-gray-700/50 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-600/50">
+            <h3 className="font-bold text-white mb-3 sm:mb-4 text-base sm:text-lg">Game Objective:</h3>
+            <ul className="text-sm text-gray-300 space-y-2 sm:space-y-3 text-left max-w-sm mx-auto">
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                 <span>Identify the icon that differs from the others in each set</span>
@@ -66,7 +66,7 @@ const GameStart: React.FC = () => {
               </li>
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                <span>Compete for the fastest completion time</span>
+                <span>Compete for the fastest completion time and win rewards</span>
               </li>
             </ul>
           </div>
@@ -98,17 +98,17 @@ const GameStart: React.FC = () => {
           )}
         </button>
         
-        <div className="mt-6 flex justify-center space-x-6 text-sm text-gray-400">
+        <div className="mt-4 sm:mt-6 flex justify-center space-x-4 sm:space-x-6 text-xs sm:text-sm text-gray-400">
           <div className="text-center">
-            <div className="font-bold text-white">6</div>
+            <div className="font-bold text-white text-lg sm:text-xl">6</div>
             <div>Rounds</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-white">50</div>
+            <div className="font-bold text-white text-lg sm:text-xl">50</div>
             <div>Icons per Round</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-white">1</div>
+            <div className="font-bold text-white text-lg sm:text-xl">1</div>
             <div>Different Icon</div>
           </div>
         </div>

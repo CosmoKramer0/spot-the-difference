@@ -44,12 +44,12 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
       <Watermark />
-      <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+      <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-6 sm:p-8 w-full max-w-md mx-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             Spot the Difference
           </h1>
-          <p className="text-gray-300">Enter your details to start the challenge</p>
+          <p className="text-sm sm:text-base text-gray-300">Enter your details to start the challenge</p>
         </div>
         
         {error && (
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Your Name
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
                 minLength: { value: 2, message: 'Name must be at least 2 characters' }
               })}
               type="text"
-              className={`w-full px-4 py-3 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 ${
+              className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
                 errors.name ? 'border-red-500' : 'border-gray-600'
               }`}
               placeholder="Enter your name"
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
                 }
               })}
               type="tel"
-              className={`w-full px-4 py-3 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 ${
+              className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
                 errors.phone ? 'border-red-500' : 'border-gray-600'
               }`}
               placeholder="Enter your phone number"
@@ -107,7 +107,7 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
+            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 mt-6"
           >
             {isLoading ? (
               <div className="flex items-center justify-center">

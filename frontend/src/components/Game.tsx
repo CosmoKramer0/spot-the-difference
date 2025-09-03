@@ -20,6 +20,7 @@ const Game: React.FC = () => {
     isGameComplete,
     currentIconSet,
     setIconSets,
+    setGameActive,
     nextRound,
     endGame,
     selectIcon,
@@ -55,6 +56,7 @@ const Game: React.FC = () => {
       setIsLoading(true);
       const response = await iconApi.getRandomSets(totalRounds);
       setIconSets((response as any).iconSets);
+      setGameActive(true);
     } catch (err) {
       setError('Failed to load game data');
     } finally {
@@ -82,7 +84,6 @@ const Game: React.FC = () => {
     if (isCorrect) {
       playCorrectSound();
       // Temporarily disable game to prevent double-clicking
-      const { setGameActive } = useGameStore.getState();
       setGameActive(false);
       
       // Advance to next round after a brief delay
@@ -91,6 +92,7 @@ const Game: React.FC = () => {
           endGame();
         } else {
           nextRound();
+          setGameActive(true);
         }
       }, 500);
     } else {
@@ -190,71 +192,113 @@ const Game: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex flex-col">
       <Watermark />
-      {/* Header - Compact */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 backdrop-blur-sm shadow-lg border-b border-gray-600/20 p-4 text-white">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-6">
-            <h1 className="text-xl font-bold text-white">
-              Round {currentRound} of {totalRounds}
-            </h1>
-            <div className="px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-bold shadow-lg">
-              Level {currentIconSet.difficulty}
+      {/* Header - Mobile Responsive */}
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 backdrop-blur-sm shadow-lg border-b border-gray-600/20 p-3 sm:p-4 text-white">
+        <div className="container mx-auto">
+          {/* Mobile Layout */}
+          <div className="block sm:hidden">
+            <div className="flex justify-between items-center mb-2">
+              <h1 className="text-lg font-bold text-white">
+                Round {currentRound}/{totalRounds}
+              </h1>
+              <button
+                onClick={handleQuitGame}
+                className="px-3 py-1 text-white/80 hover:text-red-300 hover:bg-white/10 rounded-lg transition-all duration-200 text-sm font-medium"
+              >
+                Exit
+              </button>
             </div>
-            <div className="w-40 bg-gray-600/50 rounded-full h-3">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
-                style={{ width: `${progress}%` }}
-              ></div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="px-2 py-1 bg-blue-500 text-white rounded-full text-xs font-bold shadow-lg">
+                  Level {currentIconSet.difficulty}
+                </div>
+                <div className="flex-1 max-w-24 bg-gray-600/50 rounded-full h-2">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-700 ease-out shadow-lg"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-slate-300">Time</p>
+                <p className="text-lg font-bold text-white">
+                  {timer.getFormattedTime()}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <p className="text-sm text-slate-300">Time</p>
-              <p className="text-xl font-bold text-white">
-                {timer.getFormattedTime()}
-              </p>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex justify-between items-center">
+            <div className="flex items-center space-x-4 lg:space-x-6">
+              <h1 className="text-xl font-bold text-white">
+                Round {currentRound} of {totalRounds}
+              </h1>
+              <div className="px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-bold shadow-lg">
+                Level {currentIconSet.difficulty}
+              </div>
+              <div className="w-32 lg:w-40 bg-gray-600/50 rounded-full h-3">
+                <div
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
             </div>
-            <button
-              onClick={handleQuitGame}
-              className="px-4 py-2 text-white/80 hover:text-red-300 hover:bg-white/10 rounded-lg transition-all duration-200 font-medium"
-            >
-              Exit
-            </button>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm text-slate-300">Time</p>
+                <p className="text-xl font-bold text-white">
+                  {timer.getFormattedTime()}
+                </p>
+              </div>
+              <button
+                onClick={handleQuitGame}
+                className="px-4 py-2 text-white/80 hover:text-red-300 hover:bg-white/10 rounded-lg transition-all duration-200 font-medium"
+              >
+                Exit
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Game Area - Full height */}
-      <div className="flex-1 container mx-auto p-4 flex flex-col">
-        <div className="text-center mb-4">
-          <h2 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+      {/* Game Area - Mobile Responsive */}
+      <div className="flex-1 container mx-auto p-2 sm:p-4 flex flex-col">
+        <div className="text-center mb-2 sm:mb-4">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2 drop-shadow-lg">
             {currentIconSet.name}
           </h2>
-          <p className="text-gray-300 font-medium text-lg">Find the different {currentIconSet.name.toLowerCase()} icon</p>
+          <p className="text-gray-300 font-medium text-sm sm:text-base lg:text-lg">Find the different {currentIconSet.name.toLowerCase()} icon</p>
         </div>
 
-        {/* Icon Grid - Optimized for no scrolling */}
+        {/* Icon Grid - Mobile Responsive */}
         <div className="flex-1 flex items-center justify-center">
-          <div className="grid grid-cols-10 gap-3 max-w-6xl mx-auto">
+          <div className="grid grid-cols-5 md:grid-cols-10 gap-2 md:gap-3 max-w-sm md:max-w-6xl mx-auto">
             {currentIconSet.icons.map((iconData: any, index) => {
               const iconInfo = getSvgIconData(iconData.id);
               
               return (
                 <button
                   key={index}
-                  onClick={() => handleIconClick(index)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleIconClick(index);
+                  }}
                   disabled={!isGameActive}
-                  className="hover:scale-105 transform transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus:outline-none p-1"
+                  className="hover:scale-105 transform transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus:outline-none p-0.5 md:p-1 active:scale-95"
+                  style={{ pointerEvents: 'auto', cursor: 'pointer', position: 'relative' }}
                 >
                   {iconInfo ? (
                     <SvgIcon
                       iconData={iconInfo}
                       size={52}
                       variant={iconData.variant}
-                      className="transition-all duration-150"
+                      className="transition-all duration-150 w-7 h-7 md:w-13 md:h-13"
                     />
                   ) : (
-                    <div className="w-13 h-13 bg-slate-200 rounded flex items-center justify-center text-slate-400">
+                    <div className="w-7 h-7 md:w-13 md:h-13 bg-slate-200 rounded flex items-center justify-center text-slate-400 text-xs">
                       ?
                     </div>
                   )}

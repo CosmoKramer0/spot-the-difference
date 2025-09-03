@@ -13,12 +13,16 @@ export const useTimer = (initialTime: number = 0): UseTimerReturn => {
   const [time, setTime] = useState(initialTime);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isRunning) {
+      startTimeRef.current = Date.now() - time * 10; // Account for any existing time
       intervalRef.current = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
-      }, 1000);
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTimeRef.current!) / 10);
+        setTime(elapsed);
+      }, 10);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -36,12 +40,13 @@ export const useTimer = (initialTime: number = 0): UseTimerReturn => {
   const reset = () => {
     setTime(initialTime);
     setIsRunning(false);
+    startTimeRef.current = null;
   };
 
   const getFormattedTime = () => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const totalSeconds = Math.floor(time / 100);
+    const milliseconds = time % 100;
+    return `${totalSeconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
   };
 
   return {
