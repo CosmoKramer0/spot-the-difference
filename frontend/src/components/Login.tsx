@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '../stores/authStore';
 import { authApi, ApiError } from '../utils/api';
-import Watermark from './Watermark';
 
 interface LoginForm {
   name: string;
@@ -43,7 +42,6 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
-      <Watermark />
       <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-6 sm:p-8 w-full max-w-md mx-4">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -69,9 +67,12 @@ const Login: React.FC = () => {
                 minLength: { value: 2, message: 'Name must be at least 2 characters' }
               })}
               type="text"
-              className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
+              className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
                 errors.name ? 'border-red-500' : 'border-gray-600'
               }`}
+              style={{'--tw-ring-color': '#0B63DD'} as any}
+              onFocus={(e) => e.target.style.borderColor = '#0B63DD'}
+              onBlur={(e) => e.target.style.borderColor = errors.name ? '#ef4444' : '#6b7280'}
               placeholder="Enter your name"
               disabled={isLoading}
             />
@@ -93,9 +94,12 @@ const Login: React.FC = () => {
                 }
               })}
               type="tel"
-              className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
+              className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
                 errors.phone ? 'border-red-500' : 'border-gray-600'
               }`}
+              style={{'--tw-ring-color': '#0B63DD'} as any}
+              onFocus={(e) => e.target.style.borderColor = '#0B63DD'}
+              onBlur={(e) => e.target.style.borderColor = errors.phone ? '#ef4444' : '#6b7280'}
               placeholder="Enter your phone number"
               disabled={isLoading}
             />
@@ -107,7 +111,10 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 mt-6"
+            className="w-full text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg disabled:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 mt-6"
+            style={{backgroundColor: isLoading ? '#6b7280' : '#0B63DD'}}
+            onMouseEnter={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#094fb8')}
+            onMouseLeave={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#0B63DD')}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">

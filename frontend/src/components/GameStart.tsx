@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useGameStore } from '../stores/gameStore';
 import { gameApi, ApiError } from '../utils/api';
-import Watermark from './Watermark';
 
 const GameStart: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +38,6 @@ const GameStart: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
-      <Watermark />
       <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-6 sm:p-8 w-full max-w-lg text-center mx-4">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
@@ -53,19 +51,19 @@ const GameStart: React.FC = () => {
             <h3 className="font-bold text-white mb-3 sm:mb-4 text-base sm:text-lg">Game Objective:</h3>
             <ul className="text-sm text-gray-300 space-y-2 sm:space-y-3 text-left max-w-sm mx-auto">
               <li className="flex items-start">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
                 <span>Identify the icon that differs from the others in each set</span>
               </li>
               <li className="flex items-start">
-                <span className="w-2 h-2 bg-cyan-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
                 <span>Click the unique icon to advance to the next round</span>
               </li>
               <li className="flex items-start">
-                <span className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
                 <span>Complete 6 rounds as quickly as possible</span>
               </li>
               <li className="flex items-start">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
                 <span>Compete for the fastest completion time and win rewards</span>
               </li>
             </ul>
@@ -81,7 +79,10 @@ const GameStart: React.FC = () => {
         <button
           onClick={handleStartGame}
           disabled={isLoading}
-          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 disabled:from-gray-600 disabled:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
+          className="w-full text-white py-4 rounded-xl font-bold text-lg disabled:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
+          style={{backgroundColor: isLoading ? '#6b7280' : '#0B63DD'}}
+          onMouseEnter={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#094fb8')}
+          onMouseLeave={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#0B63DD')}
         >
           {isLoading ? (
             <div className="flex items-center justify-center">

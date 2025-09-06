@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useGameStore } from '../stores/gameStore';
 import { gameApi } from '../utils/api';
-import Watermark from './Watermark';
 
 interface LeaderboardEntry {
   rank: number;
@@ -80,7 +79,7 @@ const Leaderboard: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{borderColor: '#0B63DD', borderTopColor: 'transparent'}}></div>
           <p className="text-gray-600">Loading leaderboard...</p>
         </div>
       </div>
@@ -89,7 +88,6 @@ const Leaderboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 p-4">
-      <Watermark />
       <div className="max-w-2xl mx-auto">
         <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-4 sm:p-6">
           <div className="text-center mb-6 sm:mb-8">
@@ -118,14 +116,14 @@ const Leaderboard: React.FC = () => {
                   key={`${player.rank}-${player.phone}`}
                   className={`flex items-center p-3 sm:p-4 rounded-lg border-2 transition duration-200 hover:shadow-md ${getRankStyle(player.rank)}`}
                 >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-bold mr-3 sm:mr-4 shadow-md text-sm sm:text-base">
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white font-bold mr-3 sm:mr-4 shadow-md text-sm sm:text-base" style={{backgroundColor: '#0B63DD'}}>
                     {player.rank}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-white text-sm sm:text-base truncate">
                       {player.name}
                       {user?.phone === player.phone && (
-                        <span className="ml-2 text-cyan-400 text-xs sm:text-sm">(You)</span>
+                        <span className="ml-2 text-xs sm:text-sm" style={{color: '#0B63DD'}}>(You)</span>
                       )}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-400 truncate">
@@ -133,7 +131,7 @@ const Leaderboard: React.FC = () => {
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-base sm:text-lg font-bold text-cyan-400">
+                    <p className="text-base sm:text-lg font-bold" style={{color: '#0B63DD'}}>
                       {formatTime(player.time)}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -165,7 +163,10 @@ const Leaderboard: React.FC = () => {
           <div className="flex justify-center">
             <button
               onClick={handleShareResults}
-              className="bg-gray-700/60 backdrop-blur-sm text-white py-3 px-6 sm:px-8 rounded-xl font-semibold text-sm sm:text-base hover:bg-gray-600/80 transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-600/30 transform hover:scale-105"
+              className="backdrop-blur-sm text-white py-3 px-6 sm:px-8 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-600/30 transform hover:scale-105"
+              style={{backgroundColor: 'rgba(11, 99, 221, 0.6)'}}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(11, 99, 221, 0.8)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(11, 99, 221, 0.6)'}
             >
               Share Results
             </button>

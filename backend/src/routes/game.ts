@@ -12,6 +12,33 @@ router.post('/start', authMiddleware, async (req: AuthRequest, res: Response) =>
   try {
     const userId = req.userId!;
 
+    // Get user's phone number for validation
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { phone: true }
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check how many completed games ANY user with this phone number has played
+    const completedGames = await prisma.gameSession.count({
+      where: {
+        user: {
+          phone: user.phone
+        },
+        completed: true
+      }
+    });
+
+    // Allow maximum 2 games per phone number
+    if (completedGames >= 2) {
+      return res.status(403).json({ 
+        message: 'You have already played the maximum number of games (2). Each phone number is limited to 2 attempts.' 
+      });
+    }
+
     const gameSession = await prisma.gameSession.create({
       data: {
         userId,
@@ -77,6 +104,7 @@ router.post('/complete', authMiddleware, async (req: AuthRequest, res: Response)
         completed: true
       }
     });
+
 
     res.json({
       message: 'Game completed successfully',

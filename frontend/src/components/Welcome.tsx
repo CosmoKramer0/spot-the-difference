@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Watermark from './Watermark';
 
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
@@ -11,11 +10,10 @@ const Welcome: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
-      <Watermark />
       <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-6 w-full max-w-lg text-center">
         {/* Hero Section */}
         <div className="mb-6">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style={{backgroundColor: '#0B63DD'}}>
             <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
             </svg>
@@ -23,18 +21,18 @@ const Welcome: React.FC = () => {
           
           <h1 className="text-3xl font-bold text-white mb-3 leading-tight">
             Play the Spot the<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+            <span className="text-transparent bg-clip-text" style={{backgroundImage: 'linear-gradient(to right, #0B63DD, #0B63DD)', WebkitBackgroundClip: 'text'}}>
               Difference Game
             </span>
           </h1>
           
           <p className="text-lg text-gray-300 mb-4">
-            Test your visual skills with <span className="text-cyan-400 font-semibold">Elastic</span> and win
+            Test your visual skills with <span className="font-semibold" style={{color: '#0B63DD'}}>Elastic</span> and win
           </p>
         </div>
 
         {/* Prize Section */}
-        <div className="bg-gradient-to-r from-blue-900/50 to-cyan-900/50 rounded-xl p-4 mb-6 border border-blue-500/30 shadow-lg">
+        <div className="rounded-xl p-4 mb-6 border shadow-lg" style={{backgroundColor: 'rgba(11, 99, 221, 0.1)', borderColor: 'rgba(11, 99, 221, 0.3)'}}>
           <div className="flex items-center justify-center mb-3">
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-md">
               {/* Apple logo */}
@@ -44,7 +42,7 @@ const Welcome: React.FC = () => {
             </div>
             <div className="text-left">
               <h3 className="text-xl font-bold text-white mb-1">Apple AirPods</h3>
-              <p className="text-cyan-300 text-sm font-medium">Brand New</p>
+              <p className="text-sm font-medium" style={{color: '#0B63DD'}}>Brand New</p>
             </div>
           </div>
           <p className="text-gray-300 text-xs">
@@ -55,8 +53,8 @@ const Welcome: React.FC = () => {
         {/* Game Features - Simplified */}
         <div className="flex justify-center space-x-4 sm:space-x-6 mb-6 text-sm">
           <div className="text-center">
-            <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <svg className="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto mb-2" style={{backgroundColor: 'rgba(11, 99, 221, 0.2)'}}>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{color: '#0B63DD'}}>
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
             </div>
@@ -64,8 +62,8 @@ const Welcome: React.FC = () => {
           </div>
           
           <div className="text-center">
-            <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <svg className="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto mb-2" style={{backgroundColor: 'rgba(11, 99, 221, 0.2)'}}>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{color: '#0B63DD'}}>
                 <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586z" clipRule="evenodd" />
               </svg>
             </div>
@@ -73,8 +71,8 @@ const Welcome: React.FC = () => {
           </div>
           
           <div className="text-center">
-            <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto mb-2" style={{backgroundColor: 'rgba(11, 99, 221, 0.2)'}}>
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{color: '#0B63DD'}}>
                 <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
             </div>
@@ -85,7 +83,10 @@ const Welcome: React.FC = () => {
         {/* CTA Button */}
         <button
           onClick={handleGetStarted}
-          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="w-full text-white py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          style={{backgroundColor: '#0B63DD'}}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#094fb8'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0B63DD'}
         >
           <span className="flex items-center justify-center">
             <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
