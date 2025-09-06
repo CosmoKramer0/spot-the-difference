@@ -214,8 +214,7 @@ const Game: React.FC = () => {
                 <div className="flex-1 max-w-24 bg-gray-600/50 rounded-full h-2">
                   <div
                     className="h-2 rounded-full transition-all duration-700 ease-out shadow-lg"
-                    style={{backgroundColor: '#0B63DD'}}
-                    style={{ width: `${progress}%` }}
+                    style={{backgroundColor: '#0B63DD', width: `${progress}%`}}
                   ></div>
                 </div>
               </div>
@@ -240,8 +239,7 @@ const Game: React.FC = () => {
               <div className="w-32 lg:w-40 bg-gray-600/50 rounded-full h-3">
                 <div
                   className="h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
-                  style={{backgroundColor: '#0B63DD'}}
-                  style={{ width: `${progress}%` }}
+                  style={{backgroundColor: '#0B63DD', width: `${progress}%`}}
                 ></div>
               </div>
             </div>

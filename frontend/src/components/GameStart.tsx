@@ -105,7 +105,7 @@ const GameStart: React.FC = () => {
             <div>Rounds</div>
           </div>
           <div className="text-center">
-            <div className="font-bold text-white text-lg sm:text-xl">50</div>
+            <div className="font-bold text-white text-lg sm:text-xl">35</div>
             <div>Icons per Round</div>
           </div>
           <div className="text-center">
