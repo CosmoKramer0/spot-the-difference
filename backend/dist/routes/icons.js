@@ -38,11 +38,11 @@ router.get('/sets/random/:count', async (req, res) => {
         const selectedSets = shuffled.slice(0, Math.min(count, iconSets.length));
         const formattedSets = selectedSets.map((set) => {
             // Generate a new random position for the different icon each time
-            const newCorrectPosition = Math.floor(Math.random() * 50);
+            const newCorrectPosition = Math.floor(Math.random() * 40);
             // Regenerate the icon set with the new random position
             const icons = [];
             const baseIconId = JSON.parse(set.iconUrls)[0].id; // Get the icon ID from the first item
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 40; i++) {
                 icons.push({
                     id: baseIconId,
                     variant: i === newCorrectPosition ? 'different' : 'normal'

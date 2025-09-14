@@ -20,9 +20,9 @@ const Welcome: React.FC = () => {
           </div>
           
           <h1 className="text-3xl font-bold text-white mb-3 leading-tight">
-            Play the Spot the<br />
+            Play<br />
             <span className="text-transparent bg-clip-text" style={{backgroundImage: 'linear-gradient(to right, #0B63DD, #0B63DD)', WebkitBackgroundClip: 'text'}}>
-              Difference Game
+              The Search Game
             </span>
           </h1>
           

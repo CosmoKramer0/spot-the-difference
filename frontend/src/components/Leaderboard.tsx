@@ -47,8 +47,8 @@ const Leaderboard: React.FC = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Spot the Difference - My Score!',
-          text: `I just completed the Spot the Difference challenge with ${correctAnswers}/6 correct answers and ${score} points!`,
+          title: 'The Search Game - My Score!',
+          text: `I just completed The Search Game challenge with ${correctAnswers}/6 correct answers and ${score} points!`,
           url: window.location.origin
         });
       } catch (err) {
@@ -56,7 +56,7 @@ const Leaderboard: React.FC = () => {
       }
     } else {
       // Fallback for browsers that don't support Web Share API
-      const shareText = `I just completed the Spot the Difference challenge with ${correctAnswers}/6 correct answers and ${score} points! Play at ${window.location.origin}`;
+      const shareText = `I just completed The Search Game challenge with ${correctAnswers}/6 correct answers and ${score} points! Play at ${window.location.origin}`;
       navigator.clipboard.writeText(shareText).then(() => {
         alert('Results copied to clipboard!');
       }).catch(() => {

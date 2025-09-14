@@ -45,7 +45,7 @@ const Login: React.FC = () => {
       <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-6 sm:p-8 w-full max-w-md mx-4">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-            Spot the Difference
+            The Search Game
           </h1>
           <p className="text-sm sm:text-base text-gray-300">Enter your details to start the challenge</p>
         </div>

@@ -118,6 +118,15 @@ router.post('/complete', authMiddleware, async (req: AuthRequest, res: Response)
 
 router.get('/leaderboard', async (req: Request, res: Response) => {
   try {
+    // Get total count of completed games
+    const totalGamesCount = await prisma.gameSession.count({
+      where: {
+        completed: true,
+        score: { not: null }
+      }
+    });
+
+    // Get top 10 players
     const topPlayers = await prisma.gameSession.findMany({
       where: {
         completed: true,
@@ -126,7 +135,7 @@ router.get('/leaderboard', async (req: Request, res: Response) => {
       orderBy: {
         score: 'asc'
       },
-      take: 5,
+      take: 10,
       include: {
         user: {
           select: {
@@ -145,7 +154,10 @@ router.get('/leaderboard', async (req: Request, res: Response) => {
       completedAt: session.endTime
     }));
 
-    res.json({ leaderboard });
+    res.json({
+      leaderboard,
+      totalGames: totalGamesCount
+    });
   } catch (error) {
     console.error('Leaderboard error:', error);
     res.status(500).json({ message: 'Failed to fetch leaderboard' });

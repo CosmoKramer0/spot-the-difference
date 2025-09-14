@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'));
 
 app.get('/api/health', (req, res) => {
-  res.json({ message: 'Spot the Difference API is running!' });
+  res.json({ message: 'The Search Game API is running!' });
 });
 
 app.use('/api/auth', authRoutes);

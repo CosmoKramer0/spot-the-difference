@@ -4,6 +4,7 @@ import Login from './components/Login';
 import GameStart from './components/GameStart';
 import Game from './components/Game';
 import Leaderboard from './components/Leaderboard';
+import Display from './components/Display';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/start" element={<GameStart />} />
           <Route path="/game" element={<Game />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/display" element={<Display />} />
         </Routes>
       </div>
     </Router>

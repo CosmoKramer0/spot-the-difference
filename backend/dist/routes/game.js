@@ -10,6 +10,29 @@ const router = (0, express_1.Router)();
 router.post('/start', auth_1.authMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
+        // Get user's phone number for validation
+        const user = await prisma_1.default.user.findUnique({
+            where: { id: userId },
+            select: { phone: true }
+        });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Check how many completed games ANY user with this phone number has played
+        const completedGames = await prisma_1.default.gameSession.count({
+            where: {
+                user: {
+                    phone: user.phone
+                },
+                completed: true
+            }
+        });
+        // Allow maximum 2 games per phone number
+        if (completedGames >= 2) {
+            return res.status(403).json({
+                message: 'You have already played the maximum number of games (2). Each phone number is limited to 2 attempts.'
+            });
+        }
         const gameSession = await prisma_1.default.gameSession.create({
             data: {
                 userId,
@@ -81,6 +104,14 @@ router.post('/complete', auth_1.authMiddleware, async (req, res) => {
 });
 router.get('/leaderboard', async (req, res) => {
     try {
+        // Get total count of completed games
+        const totalGamesCount = await prisma_1.default.gameSession.count({
+            where: {
+                completed: true,
+                score: { not: null }
+            }
+        });
+        // Get top 10 players
         const topPlayers = await prisma_1.default.gameSession.findMany({
             where: {
                 completed: true,
@@ -89,7 +120,7 @@ router.get('/leaderboard', async (req, res) => {
             orderBy: {
                 score: 'asc'
             },
-            take: 5,
+            take: 10,
             include: {
                 user: {
                     select: {
@@ -106,7 +137,10 @@ router.get('/leaderboard', async (req, res) => {
             time: session.score,
             completedAt: session.endTime
         }));
-        res.json({ leaderboard });
+        res.json({
+            leaderboard,
+            totalGames: totalGamesCount
+        });
     }
     catch (error) {
         console.error('Leaderboard error:', error);

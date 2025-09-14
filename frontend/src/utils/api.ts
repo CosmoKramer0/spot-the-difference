@@ -6,6 +6,7 @@ interface ApiResponse<T = any> {
   user?: any;
   token?: string;
   leaderboard?: any[];
+  totalGames?: number;
   sessionId?: string;
   startTime?: string;
 }
