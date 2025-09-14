@@ -147,12 +147,18 @@ const Display: React.FC = () => {
           <div className="flex-1 min-h-0 overflow-hidden">
             {leaderboard.length > 0 ? (
               <div className="h-full">
-                <div className="space-y-1 sm:space-y-1.5 lg:space-y-2 xl:space-y-3 h-full overflow-hidden">
+                <div
+                  className="space-y-1 sm:space-y-1.5 lg:space-y-2 xl:space-y-3 2xl:space-y-4 h-full overflow-y-auto pr-2 leaderboard-scroll"
+                  style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#4B5563 transparent'
+                  }}
+                >
                   {leaderboard.slice(0, 10).map((player) => (
                     <div
                       key={`${player.rank}-${player.phone}`}
                       className={`
-                        flex items-center p-1.5 sm:p-2 lg:p-3 xl:p-4 rounded-lg xl:rounded-xl border-2 transition-all duration-300
+                        flex items-center p-1.5 sm:p-2 lg:p-3 xl:p-4 2xl:p-6 rounded-lg xl:rounded-xl border-2 transition-all duration-300 max-h-16 sm:max-h-20 lg:max-h-24 xl:max-h-28 2xl:max-h-32
                         ${player.rank === 1 ? 'bg-gradient-to-r from-yellow-900/30 to-yellow-800/30 border-yellow-500/50 shadow-lg shadow-yellow-500/20' :
                           player.rank === 2 ? 'bg-gradient-to-r from-gray-700/30 to-gray-600/30 border-gray-400/50 shadow-lg shadow-gray-400/20' :
                           player.rank === 3 ? 'bg-gradient-to-r from-orange-900/30 to-orange-800/30 border-orange-500/50 shadow-lg shadow-orange-500/20' :
