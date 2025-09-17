@@ -152,7 +152,7 @@ const Leaderboard: React.FC = () => {
                       )}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-400 truncate">
-                      {player.phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, '$1-***-***-$4')}
+                      {player.phone}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
@@ -198,7 +198,7 @@ const Leaderboard: React.FC = () => {
                             )}
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-400 truncate">
-                            {player.phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, '$1-***-***-$4')}
+                            {player.phone}
                           </p>
                         </div>
                         <div className="text-right flex-shrink-0">
