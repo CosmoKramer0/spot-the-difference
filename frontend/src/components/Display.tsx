@@ -67,7 +67,7 @@ const Display: React.FC = () => {
       case 1: return '#FFD700'; // Gold
       case 2: return '#C0C0C0'; // Silver
       case 3: return '#CD7F32'; // Bronze
-      default: return '#0B63DD';
+      default: return '#0B64DD';
     }
   };
 
@@ -93,12 +93,11 @@ const Display: React.FC = () => {
         <div className="w-full sm:w-2/5 lg:w-1/3 flex flex-col justify-center items-center p-2 sm:p-4 lg:p-6 xl:p-8">
           {/* Title and Instructions */}
           <div className="text-center mb-4 lg:mb-6 xl:mb-8">
-            <h1 className="text-xl sm:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white mb-2 lg:mb-4">
-              Scan. Win. Share.
+            <h1 className="text-xl sm:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold mb-2 lg:mb-4" style={{color: '#0B64DD'}}>
+              The Search Game
             </h1>
             <p className="text-xs sm:text-sm lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-300 mb-4 lg:mb-6 xl:mb-8 leading-relaxed">
               Scan this QR code to play<br />
-              <span style={{color: '#0B63DD'}} className="font-bold text-sm sm:text-base lg:text-2xl xl:text-3xl 2xl:text-4xl">The Search Game</span><br />
               <span className="text-yellow-400 font-semibold">2 tries per user</span> • Win exciting prizes!
             </p>
           </div>
@@ -116,7 +115,7 @@ const Display: React.FC = () => {
           <div className="bg-gray-800/60 backdrop-blur-sm rounded-lg lg:rounded-xl p-3 lg:p-4 xl:p-6 w-full max-w-xs lg:max-w-sm">
             <div className="grid grid-cols-1 gap-2 lg:gap-3 xl:gap-4 text-center">
               <div>
-                <div className="text-lg sm:text-xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold" style={{color: '#0B63DD'}}>
+                <div className="text-lg sm:text-xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold" style={{color: '#FFFFFF'}}>
                   {stats.totalGamesPlayed}
                 </div>
                 <div className="text-xs sm:text-xs lg:text-sm xl:text-base text-gray-300">Games Completed</div>

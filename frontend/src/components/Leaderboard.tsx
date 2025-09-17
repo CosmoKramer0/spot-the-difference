@@ -10,13 +10,18 @@ interface LeaderboardEntry {
   phone: string;
   time: number;
   completedAt: string;
+  isCurrentUser?: boolean;
 }
 
 const Leaderboard: React.FC = () => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const token = useAuthStore((state) => state.token);
   const { correctAnswers, score } = useGameStore();
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [topLeaderboard, setTopLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [userContext, setUserContext] = useState<LeaderboardEntry[] | null>(null);
+  const [userRank, setUserRank] = useState<number | null>(null);
+  const [hasUserPlayed, setHasUserPlayed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -27,8 +32,18 @@ const Leaderboard: React.FC = () => {
   const fetchLeaderboard = async () => {
     try {
       setIsLoading(true);
-      const response = await gameApi.getLeaderboard();
-      setLeaderboard(response.leaderboard || []);
+      if (token) {
+        // Get context-aware leaderboard for logged-in users
+        const response = await gameApi.getLeaderboardWithContext(token);
+        setTopLeaderboard(response.topLeaderboard || []);
+        setUserContext(response.userContext || null);
+        setUserRank(response.userRank || null);
+        setHasUserPlayed(response.hasUserPlayed || false);
+      } else {
+        // Fallback to regular leaderboard for non-logged-in users
+        const response = await gameApi.getLeaderboard();
+        setTopLeaderboard(response.leaderboard || []);
+      }
     } catch (err) {
       setError('Failed to load leaderboard');
     } finally {
@@ -79,7 +94,7 @@ const Leaderboard: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{borderColor: '#0B63DD', borderTopColor: 'transparent'}}></div>
+          <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{borderColor: '#0B64DD', borderTopColor: 'transparent'}}></div>
           <p className="text-gray-600">Loading leaderboard...</p>
         </div>
       </div>
@@ -92,14 +107,22 @@ const Leaderboard: React.FC = () => {
         <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-4 sm:p-6">
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Leaderboard</h1>
-            <p className="text-sm sm:text-base text-gray-300">Top 5 fastest players</p>
-            {user && (
-              <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gray-700/50 rounded-xl border border-gray-600/50">
-                <p className="text-sm sm:text-base text-white font-semibold">Your Performance</p>
-                <p className="text-xs sm:text-sm text-gray-300">
-                  {correctAnswers}/6 correct • {score} points
+            {userRank && hasUserPlayed ? (
+              <div className="mt-4 p-4 sm:p-6 bg-gradient-to-r from-blue-900/40 to-blue-800/40 rounded-xl border border-blue-500/30 shadow-lg">
+                <div className="text-xl sm:text-2xl font-bold text-white mb-2">
+                  Your Rank
+                </div>
+                <div className="text-4xl sm:text-5xl font-black mb-2" style={{color: '#0B64DD'}}>
+                  #{userRank}
+                </div>
+                <p className="text-sm sm:text-base text-gray-300">
+                  {userRank <= 5 ? 'You\'re in the top 5!' : `Out of all players`}
                 </p>
               </div>
+            ) : (
+              <p className="text-sm sm:text-base text-gray-300">
+                Top 5 fastest players
+              </p>
             )}
           </div>
 
@@ -110,20 +133,22 @@ const Leaderboard: React.FC = () => {
           )}
 
           <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-            {leaderboard.length > 0 ? (
-              leaderboard.map((player) => (
+            {topLeaderboard.length > 0 ? (
+              <>
+                {/* Top 5 Players */}
+                {topLeaderboard.map((player) => (
                 <div
                   key={`${player.rank}-${player.phone}`}
                   className={`flex items-center p-3 sm:p-4 rounded-lg border-2 transition duration-200 hover:shadow-md ${getRankStyle(player.rank)}`}
                 >
-                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white font-bold mr-3 sm:mr-4 shadow-md text-sm sm:text-base" style={{backgroundColor: '#0B63DD'}}>
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white font-bold mr-3 sm:mr-4 shadow-md text-sm sm:text-base" style={{backgroundColor: '#0B64DD'}}>
                     {player.rank}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-white text-sm sm:text-base truncate">
                       {player.name}
                       {user?.phone === player.phone && (
-                        <span className="ml-2 text-xs sm:text-sm" style={{color: '#0B63DD'}}>(You)</span>
+                        <span className="ml-2 text-xs sm:text-sm" style={{color: '#0B64DD'}}>(You)</span>
                       )}
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-400 truncate">
@@ -131,7 +156,7 @@ const Leaderboard: React.FC = () => {
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-base sm:text-lg font-bold" style={{color: '#0B63DD'}}>
+                    <p className="text-base sm:text-lg font-bold" style={{color: '#0B64DD'}}>
                       {formatTime(player.time)}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -142,7 +167,56 @@ const Leaderboard: React.FC = () => {
                     </p>
                   </div>
                 </div>
-              ))
+                ))}
+
+                {/* User Context Section */}
+                {userContext && userContext.length > 0 && (
+                  <>
+                    <div className="flex items-center justify-center py-2">
+                      <div className="flex-1 border-t border-gray-600"></div>
+                      <span className="px-4 text-gray-400 text-sm">...</span>
+                      <div className="flex-1 border-t border-gray-600"></div>
+                    </div>
+
+                    {userContext.map((player) => (
+                      <div
+                        key={`${player.rank}-${player.phone}`}
+                        className={`flex items-center p-3 sm:p-4 rounded-lg border-2 transition duration-200 hover:shadow-md ${
+                          player.isCurrentUser
+                            ? 'bg-blue-900/30 border-blue-500/50 shadow-lg'
+                            : getRankStyle(player.rank)
+                        }`}
+                      >
+                        <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-white font-bold mr-3 sm:mr-4 shadow-md text-sm sm:text-base" style={{backgroundColor: player.isCurrentUser ? '#0B64DD' : '#6B7280'}}>
+                          {player.rank}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-white text-sm sm:text-base truncate">
+                            {player.name}
+                            {player.isCurrentUser && (
+                              <span className="ml-2 text-xs sm:text-sm" style={{color: '#0B64DD'}}>(You)</span>
+                            )}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-gray-400 truncate">
+                            {player.phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, '$1-***-***-$4')}
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-base sm:text-lg font-bold" style={{color: player.isCurrentUser ? '#0B64DD' : '#9CA3AF'}}>
+                            {formatTime(player.time)}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(player.completedAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
             ) : (
               <div className="text-center py-8 sm:py-12">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">

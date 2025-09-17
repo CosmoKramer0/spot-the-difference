@@ -6,6 +6,10 @@ interface ApiResponse<T = any> {
   user?: any;
   token?: string;
   leaderboard?: any[];
+  topLeaderboard?: any[];
+  userContext?: any[];
+  userRank?: number;
+  hasUserPlayed?: boolean;
   totalGames?: number;
   sessionId?: string;
   startTime?: string;
@@ -83,6 +87,14 @@ export const gameApi = {
 
   getLeaderboard: async () => {
     return apiRequest('/game/leaderboard');
+  },
+
+  getLeaderboardWithContext: async (token: string) => {
+    return apiRequest('/game/leaderboard-with-context', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   },
 };
 

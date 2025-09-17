@@ -147,4 +147,95 @@ router.get('/leaderboard', async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch leaderboard' });
     }
 });
+// Get leaderboard with user context
+router.get('/leaderboard-with-context', auth_1.authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        // Get user's best score
+        const userBestSession = await prisma_1.default.gameSession.findFirst({
+            where: {
+                userId,
+                completed: true,
+                score: { not: null }
+            },
+            orderBy: {
+                score: 'asc'
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        phone: true
+                    }
+                }
+            }
+        });
+        // Get total count of completed games
+        const totalGamesCount = await prisma_1.default.gameSession.count({
+            where: {
+                completed: true,
+                score: { not: null }
+            }
+        });
+        // Get all players ranked by best score to find user's position
+        const allPlayers = await prisma_1.default.gameSession.findMany({
+            where: {
+                completed: true,
+                score: { not: null }
+            },
+            orderBy: {
+                score: 'asc'
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        phone: true
+                    }
+                }
+            },
+            distinct: ['userId']
+        });
+        // Find user's rank
+        let userRank = null;
+        if (userBestSession) {
+            userRank = allPlayers.findIndex(session => session.userId === userId) + 1;
+        }
+        // Get top 5 players
+        const topPlayers = allPlayers.slice(0, 5);
+        // If user is not in top 5, get context around user's position
+        let userContext = null;
+        if (userRank && userRank > 5) {
+            const contextStart = Math.max(0, userRank - 2);
+            const contextEnd = Math.min(allPlayers.length, userRank + 1);
+            userContext = allPlayers.slice(contextStart, contextEnd).map((session, index) => ({
+                rank: contextStart + index + 1,
+                name: session.user.name,
+                phone: session.user.phone,
+                time: session.score,
+                completedAt: session.endTime,
+                isCurrentUser: session.userId === userId
+            }));
+        }
+        const topLeaderboard = topPlayers.map((session, index) => ({
+            rank: index + 1,
+            name: session.user.name,
+            phone: session.user.phone,
+            time: session.score,
+            completedAt: session.endTime,
+            isCurrentUser: session.userId === userId
+        }));
+        res.json({
+            topLeaderboard,
+            userContext,
+            userRank,
+            totalGames: totalGamesCount,
+            hasUserPlayed: !!userBestSession
+        });
+    }
+    catch (error) {
+        console.error('Leaderboard context error:', error);
+        res.status(500).json({ message: 'Failed to fetch leaderboard with context' });
+    }
+});
 exports.default = router;

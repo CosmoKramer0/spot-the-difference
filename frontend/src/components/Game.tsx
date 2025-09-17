@@ -116,7 +116,7 @@ const Game: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center">
           <div className="text-center">
-          <div className="w-20 h-20 rounded-full animate-pulse mx-auto mb-6 flex items-center justify-center" style={{backgroundColor: '#0B63DD'}}>
+          <div className="w-20 h-20 rounded-full animate-pulse mx-auto mb-6 flex items-center justify-center" style={{backgroundColor: '#0B64DD'}}>
             <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
           <p className="text-xl font-medium text-white mb-2">Preparing your challenge...</p>
@@ -140,9 +140,9 @@ const Game: React.FC = () => {
           <button
             onClick={() => navigate('/start')}
             className="text-white px-6 py-3 rounded-xl transition-all duration-200 font-medium shadow-lg"
-            style={{backgroundColor: '#0B63DD'}}
+            style={{backgroundColor: '#0B64DD'}}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#094fb8'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0B63DD'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0B64DD'}
           >
             Return to Start
           </button>
@@ -155,7 +155,7 @@ const Game: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
           <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/20 p-8 text-center max-w-md w-full">
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{backgroundColor: '#0B63DD'}}>
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{backgroundColor: '#0B64DD'}}>
             <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
@@ -165,12 +165,12 @@ const Game: React.FC = () => {
           </h2>
           <div className="bg-gray-700/50 rounded-xl p-4 mb-6 border border-gray-600/50">
             <p className="text-lg font-bold text-white mb-2">Final Time</p>
-            <p className="text-3xl font-bold" style={{color: '#0B63DD'}}>
+            <p className="text-3xl font-bold" style={{color: '#0B64DD'}}>
               {timer.getFormattedTime()}
             </p>
           </div>
           <div className="flex items-center justify-center text-gray-400 text-sm">
-            <div className="animate-spin w-4 h-4 border-2 border-gray-600 rounded-full mr-2" style={{borderTopColor: '#0B63DD'}}></div>
+            <div className="animate-spin w-4 h-4 border-2 border-gray-600 rounded-full mr-2" style={{borderTopColor: '#0B64DD'}}></div>
             Saving your score...
           </div>
         </div>
@@ -208,13 +208,13 @@ const Game: React.FC = () => {
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="px-2 py-1 text-white rounded-full text-xs font-bold shadow-lg" style={{backgroundColor: '#0B63DD'}}>
+                <div className="px-2 py-1 text-white rounded-full text-xs font-bold shadow-lg" style={{backgroundColor: '#0B64DD'}}>
                   Level {currentIconSet.difficulty}
                 </div>
                 <div className="flex-1 max-w-24 bg-gray-600/50 rounded-full h-2">
                   <div
                     className="h-2 rounded-full transition-all duration-700 ease-out shadow-lg"
-                    style={{backgroundColor: '#0B63DD', width: `${progress}%`}}
+                    style={{backgroundColor: '#0B64DD', width: `${progress}%`}}
                   ></div>
                 </div>
               </div>
@@ -233,13 +233,13 @@ const Game: React.FC = () => {
               <h1 className="text-xl font-bold text-white">
                 Round {currentRound} of {totalRounds}
               </h1>
-              <div className="px-3 py-1 text-white rounded-full text-sm font-bold shadow-lg" style={{backgroundColor: '#0B63DD'}}>
+              <div className="px-3 py-1 text-white rounded-full text-sm font-bold shadow-lg" style={{backgroundColor: '#0B64DD'}}>
                 Level {currentIconSet.difficulty}
               </div>
               <div className="w-32 lg:w-40 bg-gray-600/50 rounded-full h-3">
                 <div
                   className="h-3 rounded-full transition-all duration-700 ease-out shadow-lg"
-                  style={{backgroundColor: '#0B63DD', width: `${progress}%`}}
+                  style={{backgroundColor: '#0B64DD', width: `${progress}%`}}
                 ></div>
               </div>
             </div>

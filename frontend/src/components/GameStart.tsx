@@ -47,23 +47,23 @@ const GameStart: React.FC = () => {
             Test your visual perception with our modern pattern recognition challenge
           </p>
           
-          <div className="bg-gray-700/50 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-600/50">
+          <div className="bg-gray-800/50 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-600/50">
             <h3 className="font-bold text-white mb-3 sm:mb-4 text-base sm:text-lg">Game Objective:</h3>
             <ul className="text-sm text-gray-300 space-y-2 sm:space-y-3 text-left max-w-sm mx-auto">
               <li className="flex items-start">
-                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B64DD'}}></span>
                 <span>Identify the icon that differs from the others in each set</span>
               </li>
               <li className="flex items-start">
-                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B64DD'}}></span>
                 <span>Click the unique icon to advance to the next round</span>
               </li>
               <li className="flex items-start">
-                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B64DD'}}></span>
                 <span>Complete 6 rounds as quickly as possible</span>
               </li>
               <li className="flex items-start">
-                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B63DD'}}></span>
+                <span className="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0" style={{backgroundColor: '#0B64DD'}}></span>
                 <span>Compete for the fastest completion time and win rewards</span>
               </li>
             </ul>
@@ -80,14 +80,14 @@ const GameStart: React.FC = () => {
           onClick={handleStartGame}
           disabled={isLoading}
           className="w-full text-white py-4 rounded-xl font-bold text-lg disabled:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
-          style={{backgroundColor: isLoading ? '#6b7280' : '#0B63DD'}}
+          style={{backgroundColor: isLoading ? '#6b7280' : '#0B64DD'}}
           onMouseEnter={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#094fb8')}
-          onMouseLeave={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#0B63DD')}
+          onMouseLeave={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#0B64DD')}
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
-              Preparing Game...
+              Starting Challenge...
             </div>
           ) : (
             <span className="flex items-center justify-center">

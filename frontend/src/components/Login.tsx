@@ -48,6 +48,14 @@ const Login: React.FC = () => {
             The Search Game
           </h1>
           <p className="text-sm sm:text-base text-gray-300">Enter your details to start the challenge</p>
+          <div className="mt-4 p-3 bg-blue-900/30 border border-blue-500/30 rounded-lg">
+            <p className="text-xs sm:text-sm text-blue-200 text-center flex items-center justify-center">
+              <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              Use the same phone number as registration.
+            </p>
+          </div>
         </div>
         
         {error && (
@@ -70,8 +78,8 @@ const Login: React.FC = () => {
               className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
                 errors.name ? 'border-red-500' : 'border-gray-600'
               }`}
-              style={{'--tw-ring-color': '#0B63DD'} as any}
-              onFocus={(e) => e.target.style.borderColor = '#0B63DD'}
+              style={{'--tw-ring-color': '#0B64DD'} as any}
+              onFocus={(e) => e.target.style.borderColor = '#0B64DD'}
               onBlur={(e) => e.target.style.borderColor = errors.name ? '#ef4444' : '#6b7280'}
               placeholder="Enter your name"
               disabled={isLoading}
@@ -97,8 +105,8 @@ const Login: React.FC = () => {
               className={`w-full px-3 py-3 sm:px-4 bg-gray-700 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition text-white placeholder-gray-400 text-base ${
                 errors.phone ? 'border-red-500' : 'border-gray-600'
               }`}
-              style={{'--tw-ring-color': '#0B63DD'} as any}
-              onFocus={(e) => e.target.style.borderColor = '#0B63DD'}
+              style={{'--tw-ring-color': '#0B64DD'} as any}
+              onFocus={(e) => e.target.style.borderColor = '#0B64DD'}
               onBlur={(e) => e.target.style.borderColor = errors.phone ? '#ef4444' : '#6b7280'}
               placeholder="Enter your phone number"
               disabled={isLoading}
@@ -112,9 +120,9 @@ const Login: React.FC = () => {
             type="submit"
             disabled={isLoading}
             className="w-full text-white py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg disabled:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 mt-6"
-            style={{backgroundColor: isLoading ? '#6b7280' : '#0B63DD'}}
+            style={{backgroundColor: isLoading ? '#6b7280' : '#0B64DD'}}
             onMouseEnter={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#094fb8')}
-            onMouseLeave={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#0B63DD')}
+            onMouseLeave={(e) => !isLoading && (e.currentTarget.style.backgroundColor = '#0B64DD')}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
