@@ -199,7 +199,7 @@ router.get('/leaderboard-with-context', auth_1.authMiddleware, async (req, res) 
         // Find user's rank
         let userRank = null;
         if (userBestSession) {
-            userRank = allPlayers.findIndex(session => session.userId === userId) + 1;
+            userRank = allPlayers.findIndex((session) => session.userId === userId) + 1;
         }
         // Get top 5 players
         const topPlayers = allPlayers.slice(0, 5);
