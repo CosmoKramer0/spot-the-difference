@@ -25,9 +25,9 @@ model GameSession {
   endTime   DateTime?
   score     Int?
   completed Boolean  @default(false)
-  
+
   user User @relation(fields: [userId], references: [id])
-  
+
   @@map("game_sessions")
 }
 

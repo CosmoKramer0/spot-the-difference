@@ -69,9 +69,15 @@ router.post('/complete', auth_1.authMiddleware, async (req, res) => {
         }
         const userId = req.userId;
         const { sessionId, totalTime } = body;
-        if (!sessionId || totalTime === undefined) {
+        if (!sessionId || totalTime === undefined || totalTime === null) {
             return res.status(400).json({
                 message: 'Session ID and total time are required'
+            });
+        }
+        // Validate totalTime is a positive number and reasonable
+        if (typeof totalTime !== 'number' || totalTime < 0 || totalTime > 3600000) {
+            return res.status(400).json({
+                message: 'Invalid time value. Time must be between 0 and 3600000 centiseconds (1 hour)'
             });
         }
         const gameSession = await prisma_1.default.gameSession.findFirst({
@@ -84,11 +90,24 @@ router.post('/complete', auth_1.authMiddleware, async (req, res) => {
         if (!gameSession) {
             return res.status(404).json({ message: 'Game session not found' });
         }
+        // Calculate server-side time as backup validation
+        const endTime = new Date();
+        const serverCalculatedTime = Math.floor((endTime.getTime() - gameSession.startTime.getTime()) / 10);
+        // Use client time if reasonable, otherwise use server time
+        let finalTime = totalTime;
+        const timeDifference = Math.abs(serverCalculatedTime - totalTime);
+        // If client time differs significantly from server time (more than 30 seconds), use server time
+        if (timeDifference > 3000) {
+            console.warn(`Client time (${totalTime}) differs significantly from server time (${serverCalculatedTime}), using server time`);
+            finalTime = serverCalculatedTime;
+        }
+        // Final validation: ensure positive and reasonable time
+        finalTime = Math.max(1, Math.min(finalTime, 3600000));
         const updatedSession = await prisma_1.default.gameSession.update({
             where: { id: sessionId },
             data: {
-                endTime: new Date(),
-                score: totalTime,
+                endTime,
+                score: finalTime,
                 completed: true
             }
         });

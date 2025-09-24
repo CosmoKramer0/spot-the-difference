@@ -17,11 +17,15 @@ export const useTimer = (initialTime: number = 0): UseTimerReturn => {
 
   useEffect(() => {
     if (isRunning) {
-      startTimeRef.current = Date.now() - time * 10; // Account for any existing time
+      // Only set start time if not already set, prevent negative calculations
+      if (startTimeRef.current === null) {
+        startTimeRef.current = Date.now();
+      }
       intervalRef.current = setInterval(() => {
         const now = Date.now();
         const elapsed = Math.floor((now - startTimeRef.current!) / 10);
-        setTime(elapsed);
+        // Ensure elapsed time is never negative
+        setTime(Math.max(0, elapsed));
       }, 10);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
