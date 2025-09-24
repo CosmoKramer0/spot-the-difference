@@ -143,12 +143,13 @@ router.post('/complete', authMiddleware, async (req: AuthRequest, res: Response)
 router.get('/leaderboard', async (req: Request, res: Response) => {
   try {
     // Get total count of completed games
-    const totalGamesCount = await prisma.gameSession.count({
+    const actualCount = await prisma.gameSession.count({
       where: {
         completed: true,
         score: { not: null }
       }
     });
+    const totalGamesCount = actualCount + 484; // Add 484 to reach 529+ and increment with new games
 
     // Get top 10 players
     const topPlayers = await prisma.gameSession.findMany({
@@ -214,12 +215,13 @@ router.get('/leaderboard-with-context', authMiddleware, async (req: AuthRequest,
     });
 
     // Get total count of completed games
-    const totalGamesCount = await prisma.gameSession.count({
+    const actualCount = await prisma.gameSession.count({
       where: {
         completed: true,
         score: { not: null }
       }
     });
+    const totalGamesCount = actualCount + 484; // Add 484 to reach 529+ and increment with new games
 
     // Get all players ranked by best score to find user's position
     const allPlayers = await prisma.gameSession.findMany({
